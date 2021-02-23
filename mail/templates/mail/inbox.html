@@ -1,0 +1,520 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div id="container" class="container">
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script type="text/babel">
+
+        class ViewEmail extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    isRead: '',
+                    isArchived: '',
+                };
+            };
+
+            componentDidMount = () => {
+                this.setState({
+                    isRead: this.props.email.read,
+                    isArchived: this.props.email.archived,
+                });
+            };
+
+            markEmail = (action) => {
+                const emailID = this.props.email.id;
+                let body;
+                if (action === "read") {
+                    let isRead = !this.state.isRead;
+                    this.setState({
+                        isRead: isRead,
+                    })
+                    body = JSON.stringify({
+                        read: isRead,
+                    });
+                } else {
+                    let isArchived = !this.state.isArchived;
+                    this.setState({
+                        isArchived: isArchived,
+                    })
+                    body = JSON.stringify({
+                        archived: isArchived,
+                    })
+                }
+                fetch(`/emails/${emailID}`, {
+                    method: 'PUT',
+                    body: body,
+                })
+            }
+
+            createMarkup = (content) => {
+                return {__html: content};
+            };
+
+            render() {
+                let readStatus = this.state.isRead ? "Mark as unread" : "Mark as read";
+                let archivedStatus = this.state.isArchived ? "Remove from archive" : "Archive";
+
+                return(
+                    <div id="viewEmail" className="viewEmail pageContainer">
+                        <div id="viewEmailCon" className="viewEmailCon">
+                            <div id="emailInfo" className="emailInfo">
+                                <div className="emailInfoGroup">
+                                    <p className="emailInfoLabel">From:</p>
+                                    <p className="emailInfoData">{this.props.email.sender}</p>
+                                </div>
+                                <div className="emailInfoGroup">
+                                    <p className="emailInfoLabel">To:</p>
+                                    <p className="emailInfoData">{this.props.email.recipients}</p>
+                                </div>
+                                <div className="emailInfoGroup">
+                                    <p className="emailInfoLabel">Subject:</p>
+                                    <p className="emailInfoData">{this.props.email.subject}</p>
+                                </div>
+                                <div className="emailInfoGroup">
+                                    <p className="emailInfoLabel">Timestamp:</p>
+                                    <p className="emailInfoData">{this.props.email.timestamp}</p>
+                                </div>
+                            </div>
+                            <div id="emilBtnGroup" className="emailBtnGroup">
+                                <ul className="emailBtnGroupUl">
+                                    <li className="emailBtn" onClick={() => this.props.changePage("reply", "", this.props.email) }>Reply</li>
+                                    <li className="emailBtn" onClick={() => this.markEmail("read")}>{readStatus}</li>
+                                    <li className="emailBtn" onClick={() => this.markEmail("archived")}>{archivedStatus}</li>
+                                </ul>
+                            </div>
+                            <div id="emailContent" className="emailContent" dangerouslySetInnerHTML={this.createMarkup(this.props.email.body)} />
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+
+        // Archived
+        function Archived(props) {
+            return(
+                <div id="archived" className="archived pageContainer">
+                    <h1 id="pageTitle" className="pageTitle">Archived</h1>
+                </div>
+            );
+        };
+
+
+        // Composed
+        function Compose(props) {      
+            let csrf = `{% csrf_token %}`;
+            let csrfdom = <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />;
+
+            let reSubject;
+            let reSender;
+            let replyContent;
+            let message;
+
+            if (props.email) {
+                reSender = props.email.sender;
+            };
+
+            const createMarkup = (content) => {
+                return {__html: content};
+            };
+
+            if (props.email) {
+                replyContent = (
+                    <div className="replyEmailCon">
+                        <br />
+                        <br />
+                        <br />
+                        <p>REPLY: {props.email.sender} wrote on {props.email.timestamp}: ------------------------------</p>
+                        <div className="replyEmail" dangerouslySetInnerHTML={createMarkup(props.email.body)}/>
+                    </div>
+                );
+            }
+
+            if (props.email) {
+                let regex = /(Re: )/;
+                reSubject = props.email.subject.match(regex) ? props.email.subject : `Re: ${props.email.subject}` ;
+            };
+
+            const sendEmail = (event) => {
+                event.preventDefault();
+                let sender = event.target.from.value;
+                let recipients = event.target.to.value;
+                let subject = event.target.subject.value;
+                let content = document.querySelector(".ql-editor").innerHTML;
+
+                fetch('/emails', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        recipients: recipients,
+                        subject: subject,
+                        body: content
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.error) {
+                        document.querySelector(".inboxMessage").innerHTML = result.error;
+                        return;
+                    };
+                    props.changePage("inbox", result.message);
+                });
+            };
+
+
+            return(
+                <div id="compose" className="compose pageContainer">
+                    <div id="composeCon" className="composeCon">
+                        <h1 id="pageTitle" className="pageTitle">{props.title}</h1>
+                        <p className="inboxMessage">{message}</p>
+                        <form id="compose" className="form-02" onSubmit={sendEmail}>
+                            <div id="composeTitle" className="form-02-group">
+                                <label className="form-02-label">From:</label>
+                                <input type="text" name="from" className="form-02-input" value="{{ request.user.email }}" disabled />
+                            </div>
+                            <div id="composeTitle" className="form-02-group">
+                                <label className="form-02-label">To:</label>
+                                <input type="text" name="to" className="form-02-input" value={reSender} autoComplete="off" required />
+                            </div>
+                            <div id="composeTitle" className="form-02-group">
+                                <label className="form-02-label">Subject</label>
+                                <input type="text" name="subject" className="form-02-input" value={reSubject} autoComplete="off" required />
+                            </div>
+                            <div id="toolbar">
+                            </div>
+                            <div id="editor" data-name="content" name="content">
+                                {replyContent}
+                            </div>
+                            <input type="submit" className="form-02-submit" />
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+
+        // Inbox
+        class Inbox extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    results: [],
+                    emails: [],
+                    current_page: 0,
+                };
+            };
+
+            componentDidMount() {
+                this.getEmail();
+            };
+
+            getEmail = () => {
+                let email = [];
+                let results = [];
+                let pages = 0;
+                let pageLi = [];
+                fetch(`/emails/${this.props.inbox}`)
+                .then(response => response.json())
+                .then(emails => {
+                    // Print emails
+                    pages = Math.ceil(emails.length / 10);
+                    for (let i = 0; i < pages; i++) {
+                        if (i > 0 && i < pages - 1) {
+                            pageLi.push(
+                                <li className="inboxPaginationLi" onClick={() => this.displayEmail(i)}>{i}</li>
+                            );
+                        }
+                    };
+
+                    emails.forEach((item, i) => {
+                        results.push(item);
+                    });
+                    
+                    for(let i = 0; i < 10; i++) {
+                        if (emails[i]) {
+                            email.push(
+                                <EmailPreview   
+                                    key={`emailpreview-${i}`}
+                                    inbox={emails[i].id}
+                                    sender={emails[i].sender}
+                                    subject={emails[i].subject}
+                                    timestamp={emails[i].timestamp}
+                                    read={emails[i].read}
+                                    readEmail={this.props.readEmail}
+                                />
+                            );
+                        }
+                    };
+                    this.setState({
+                        results: results,
+                        emails: email,
+                        pages: pages - 1,
+                        pageLi: pageLi,
+                    });
+                });
+            };
+
+            displayEmail = (p) => {
+                let page = p * 10;
+                let emails = [];
+                for (let i = 0; i < 10; i++) {
+                    let item = this.state.results[page + i];
+                    if (item) {
+                        emails.push(
+                            <EmailPreview
+                                key={`emailpreview-${i}`}
+                                inbox={item.id}
+                                sender={item.sender}
+                                subject={item.subject}
+                                timestamp={item.timestamp}
+                                read={item.read}
+                                readEmail={this.props.readEmail}
+                            />
+                        )
+                    }
+                };
+                this.setState({
+                    emails: emails,
+                    current_page: p,
+                });
+            };
+
+            render() {
+                return(
+                    <div id="inbox" className="inbox pageContainer">
+                        <h1 id="pageTitle" className="pageTitle">{this.props.title}</h1>
+                        <p className="inboxMessage">{this.props.message}</p>
+                        <div id="inboxCon" className="inboxCon">
+                            {this.state.emails}
+                        </div>
+                        <div id="inboxPaginationGroup" className="inboxPaginationGroup">
+                            <ul className="inboxPaginationUl">
+                                <li className="inboxPaginationLi" onClick={() => this.displayEmail(0)}>First</li>
+                                {this.state.pageLi}
+                                <li className="inboxPaginationLi" onClick={() => this.displayEmail(this.state.pages)}>Last</li>
+                            </ul>
+                        </div>
+                    </div>
+                );
+            };
+        };
+
+        
+        // Email Preview
+        function EmailPreview(props) {
+            let read = props.read ? "emailPreview" : "emailPreview emailRead";
+
+            return(
+                <div className={read} onClick={() => props.readEmail(props.inbox)}>
+                    <p className="emailPreviewSender">{props.sender}</p>
+                    <p className="emailPreviewSubject">{props.subject}</p>
+                    <p className="emailPreviewDate">{props.timestamp}</p>
+                </div>
+            );
+        };
+
+
+        function Navbar(props) {
+            return(
+                <div id="navbar" className="navbar">
+                    <div id="navbarUpper" className="navbarUpper">
+                        <div id="navbarUser" className="navbarUser">
+                            <p className="navbarUserWelcome">Welcome!</p>
+                            <p className="navbarUserEmail">admin@example.com</p>
+                        </div>
+                        <div id="navbarLogo" className="navbarLogo">
+                            <img src="{% static 'image/logo.png' %}" alt="Logo" className="navbarLogo-logo" />
+                        </div>
+                        <div id="navbarDate" className="navbarDate">
+                        </div>
+                    </div>
+                    <div id="navbarLower" className="navbarLower">
+                        <ul className="navbarMenu">
+                            <li onClick={() => props.changePage("inbox")}>Inbox</li>
+                            <li onClick={() => props.changePage("compose")}>Compose</li>
+                            <li onClick={() => props.changePage("sent")}>Sent</li>
+                            <li onClick={() => props.changePage("archive")}>Archived</li>
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            );
+        };
+
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    current_page: <Inbox
+                                    key="inbox"
+                                    inbox="inbox"
+                                    title="Inbox"
+                                    readEmail={this.readEmail}
+                                  />,
+                    current_page_no: "inbox",
+                };
+
+                this.changePage = this.changePage.bind(this);
+                this.readEmail = this.readEmail.bind(this);
+            };
+
+            componentDidUpdate() {
+                let toolbarOptions = [
+                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                    ['blockquote', 'code-block'],
+
+                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                    [{ 'direction': 'rtl' }],                         // text direction
+
+                    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+
+                    ['clean']                                         // remove formatting button
+                ];
+                let options = {
+                    modules: {
+                        // Equivalent to { toolbar: { container: '#toolbar' }}
+                        toolbar: toolbarOptions,
+                    },
+                    placeholder: 'Write content here...',
+                    theme: 'snow',
+                }
+                if (this.state.current_page_no === "compose" || this.state.current_page_no === "reply") {
+                    const quill = new Quill('#editor', options);
+                };
+            };
+
+            readEmail = (inbox) => {
+                let result = [];
+                fetch(`/emails/${inbox}`)
+                .then(response => response.json())
+                .then(email => {
+                    // Print email
+                    this.changePage("view", "", email);
+                    // ... do something else with emails ...
+                    this.setState({
+                        email: result,
+                    });
+                });
+                fetch(`/emails/${inbox}`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        read: true,
+                    })
+                });
+            }
+
+
+            changePage = (page, message, email) => {
+                let current_page;
+                let current_page_no;
+                if (page === this.state.current_page_no) return;
+                switch(page) {
+                    case "inbox":
+                        current_page = <Inbox
+                                            key="inbox"
+                                            message={message}
+                                            inbox="inbox"
+                                            title="Inbox"
+                                            readEmail={this.readEmail}
+                                        />;
+                        current_page_no = "inbox";
+                        break;
+                    case "compose":
+                        current_page = <Compose
+                                            key="compose"
+                                            changePage={this.changePage}
+                                            title="Compose"
+                                        />;
+                        current_page_no = "compose";
+                        break;
+                    case "reply":
+                        current_page = <Compose
+                                            key="reply"
+                                            sendEmail={this.sendEmail}
+                                            email={email}
+                                            title="Reply"
+                                        />;
+                        current_page_no = "reply";
+                        break;
+                    case "sent":
+                        current_page = <Inbox
+                                            key="sent"
+                                            inbox="sent"
+                                            title="Sent"
+                                            readEmail={this.readEmail}
+                                        />;
+                        current_page_no = "sent";
+                        break;
+                    case "archive":
+                        current_page = <Inbox
+                                            key="archived"
+                                            inbox="archive"
+                                            title="Archive"
+                                            readEmail={this.readEmail}
+                                        />;
+                        current_page_no = "archived";
+                        break;
+                    case "view":
+                        current_page = <ViewEmail
+                                            key="viewEmail"
+                                            email={email}
+                                            changePage={this.changePage}
+                                        />;
+                        current_page_no = "view";
+                        break;
+                    default:
+                        current_page = <Inbox
+                                            key="inbox"
+                                            message={message}
+                                            inbox="inbox"
+                                            title="Inbox"
+                                            readEmail={this.readEmail}
+                                        />
+                        current_page_no = "inbox";
+                        break;
+                };
+                this.setState({
+                    current_page: current_page,
+                    current_page_no: current_page_no,
+                });
+            };
+
+            render() {
+                return(
+                    <div id="App" className="App">
+                        <Navbar 
+                            key="navbar"
+                            changePage={this.changePage}
+                        />
+                        {this.state.current_page}
+                    </div>
+                );
+            };
+        };
+
+        const domContainer = document.querySelector('#container');
+
+        ReactDOM.render(
+            <App key="app" />,
+            domContainer
+        );
+
+    
+    </script>
+{% endblock %}

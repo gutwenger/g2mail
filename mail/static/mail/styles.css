@@ -1,0 +1,571 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, sans-serif;
+}
+
+.form-01 {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  color: gray;
+  display: flex;
+  flex-direction: column;
+}
+.form-01 .form-01-group {
+  box-sizing: border-box;
+  height: 50px;
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 10px;
+  background-color: #80808033;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  grid-template-areas: "icon input verification";
+}
+.form-01 .form-01-group .form-01-group-icon {
+  grid-area: icon;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form-01 .form-01-group .form-01-group-input {
+  grid-area: input;
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+}
+.form-01 .form-01-group .form-01-group-input .form-01-group-input-label {
+  position: absolute;
+  box-sizing: border-box;
+  height: calc(100% - 10px);
+  width: 100%;
+  font-weight: 100;
+  letter-spacing: -1px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: 0.5s;
+}
+.form-01 .form-01-group .form-01-group-input .form-01-group-input-input {
+  position: absolute;
+  box-sizing: border-box;
+  top: 20px;
+  height: calc(100% - 25px);
+  width: 100%;
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+.form-01 .form-01-group .form-01-group-input:focus-within .form-01-group-input-label {
+  color: darkgray;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+  align-items: flex-start;
+  transition: 0.5s;
+}
+.form-01 .form-01-group .form-01-group-input-label-active {
+  color: black;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  align-items: flex-start;
+  transition: 0.5s;
+}
+.form-01 .form-01-group .form-01-group-verification {
+  grid-area: verification;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form-01 .form-01-group:focus-within {
+  background-color: #FFFFFFAA;
+  transition: 0.5s;
+}
+.form-01 .form-01-submit {
+  box-sizing: border-box;
+  height: 35px;
+  width: 100px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  background-color: #24e4da55;
+  cursor: pointer;
+}
+.form-01 .form-01-submit:hover {
+  background-color: #24e4da;
+}
+.form-01 .form-01-message {
+  font-size: 15px;
+  font-weight: 200;
+}
+.form-01 .form-01-errormessage {
+  font-size: 13px;
+  color: darkred;
+  margin-top: 5px;
+}
+
+.form-02 {
+  box-sizing: border-box;
+  height: fit-content;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form-02 .form-02-group {
+  box-sizing: border-box;
+  height: fit-content;
+  width: 100%;
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+}
+.form-02 .form-02-group .form-02-label {
+  font-weight: 100;
+  display: flex;
+  align-items: center;
+}
+.form-02 .form-02-group .form-02-input {
+  box-sizing: border-box;
+  height: 30px;
+  padding: 5px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  background-color: #00000010;
+}
+.form-02 .ql-toolbar {
+  border-radius: 5px 5px 0 0;
+}
+.form-02 #editor {
+  height: fit-content;
+  min-height: 200px;
+  width: 100%;
+  border-radius: 0 0 5px 5px;
+}
+.form-02 .form-02-submit {
+  box-sizing: border-box;
+  margin-top: 10px;
+  height: 35px;
+  width: 100px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  background-color: #24e4da55;
+  cursor: pointer;
+}
+.form-02 .form-02-submit:hover {
+  background-color: #24e4da;
+}
+
+.login-register {
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background-image: radial-gradient(circle farthest-corner at 10% 20%, #e2f0fe 0%, #fff7e4 90%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-register .login-register-con {
+  box-sizing: border-box;
+  height: 450px;
+  width: 700px;
+  border-radius: 20px;
+  background-color: #FFFFFFAA;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  grid-template-rows: 100px 30px 1fr;
+  grid-template-areas: "logo image" "title image" "form image";
+}
+.login-register .login-register-con .login-register-logo-con {
+  grid-area: logo;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.login-register .login-register-con .login-register-logo-con .login-register-logo {
+  box-sizing: border-box;
+  height: 100%;
+  width: auto;
+}
+.login-register .login-register-con .login-register-title-con {
+  grid-area: title;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 0 20px;
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+.login-register .login-register-con .login-register-form-con {
+  grid-area: form;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 0 20px;
+}
+.login-register .login-register-con .login-register-image-con {
+  grid-area: image;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+.login-register .login-register-con .login-register-image-con .register-image {
+  box-sizing: border-box;
+  max-height: 100%;
+  width: 100%;
+  border-radius: 15px;
+  opacity: 0.7;
+}
+
+.container {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  background-image: radial-gradient(circle farthest-corner at 10% 20%, #e2f0fe 0%, #fff7e4 90%);
+  display: flex;
+  justify-content: center;
+}
+
+.App {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 800px;
+}
+
+.navbar {
+  box-sizing: border-box;
+  height: 150px;
+  width: 100%;
+}
+.navbar .navbarUpper {
+  box-sizing: border-box;
+  height: 100px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+}
+.navbar .navbarUpper .navbarUser {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 20px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.navbar .navbarUpper .navbarUser .navbarUserWelcome {
+  font-size: 15px;
+  font-weight: 200;
+}
+.navbar .navbarUpper .navbarUser .navbarUserEmail {
+  box-sizing: border-box;
+  height: fit-content;
+  width: fit-content;
+  margin-top: 5px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.navbar .navbarUpper .navbarLogo {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navbar .navbarUpper .navbarLogo .navbarLogo-logo {
+  height: 100px;
+  width: 100px;
+}
+.navbar .navbarLower {
+  box-sizing: border-box;
+  height: 50px;
+  width: 100%;
+  padding: 0px 50px;
+  border-radius: 10px;
+  background-color: #FFFFFFAA;
+}
+.navbar .navbarLower .navbarMenu {
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.navbar .navbarLower .navbarMenu li {
+  height: 100%;
+  width: 100px;
+  font-size: 13px;
+  font-weight: 200;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.navbar .navbarLower .navbarMenu li a {
+  text-decoration: none;
+  color: black;
+}
+.navbar .navbarLower .navbarMenu li:hover {
+  background-color: #00000010;
+  transition: 0.3s;
+}
+
+.pageContainer {
+  box-sizing: border-box;
+  height: calc(100% - 150px);
+  width: 100%;
+  overflow-y: scroll;
+}
+.pageContainer .pageTitle {
+  box-sizing: border-box;
+  height: fit-content;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 5px 20px;
+  background-color: #FFFFFFAA;
+  border-radius: 0 0 5px 5px;
+  font-size: 25px;
+  font-weight: 100;
+  letter-spacing: -2px;
+}
+
+.pageContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.compose .composeCon {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.inboxMessage {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.inboxCon {
+  box-sizing: border-box;
+  height: fit-content;
+  max-height: calc(100% - 100px);
+  width: 100%;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+.inboxCon::-webkit-scrollbar {
+  display: none;
+}
+
+.inboxPaginationGroup {
+  box-sizing: border-box;
+  height: 60px;
+  width: 100%;
+  display: flex;
+}
+.inboxPaginationGroup .inboxPaginationUl {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.inboxPaginationGroup .inboxPaginationUl .inboxPaginationLi {
+  box-sizing: border-box;
+  height: fit-content;
+  width: fit-content;
+  margin: 5px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 100;
+  border-radius: 5px;
+  background-color: #24e4da55;
+  cursor: pointer;
+}
+.inboxPaginationGroup .inboxPaginationUl .inboxPaginationLi:hover {
+  background-color: #24e4da;
+}
+
+.emailRead {
+  background-color: #FFFFFFEE;
+}
+
+.emailPreview {
+  box-sizing: border-box;
+  height: 50px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  border-bottom: 1px solid lightgray;
+  font-weight: 100;
+  display: grid;
+  grid-template-columns: 200px 1fr 150px;
+  align-items: center;
+  cursor: pointer;
+}
+.emailPreview .emailPreviewSender {
+  font-size: 13px;
+}
+.emailPreview .emailPreviewSubject {
+  padding-right: 10px;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.emailPreview .emailPreviewDate {
+  padding-right: 10px;
+  font-size: 13px;
+  text-align: right;
+}
+
+.emailPreview:hover {
+  box-shadow: 0px 0px 10px lightgray;
+}
+
+.viewEmailCon {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.viewEmailCon .emailInfo {
+  box-sizing: border-box;
+  height: fit-content;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: #FFFFFF80;
+}
+.viewEmailCon .emailInfo .emailInfoGroup {
+  box-sizing: border-box;
+  height: fit-content;
+  width: 100%;
+  margin: 5px 0;
+  font-size: 13px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+}
+.viewEmailCon .emailBtnGroup {
+  box-sizing: border-box;
+  height: fit-content;
+  width: 100%;
+}
+.viewEmailCon .emailBtnGroup .emailBtnGroupUl {
+  display: flex;
+  list-style: none;
+}
+.viewEmailCon .emailBtnGroup .emailBtnGroupUl .emailBtn {
+  box-sizing: border-box;
+  height: fit-content;
+  width: fit-content;
+  margin: 0 10px 10px 0;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 200;
+  background-color: #24e4da55;
+  cursor: pointer;
+}
+.viewEmailCon .emailBtnGroup .emailBtnGroupUl .emailBtn:hover {
+  background-color: #24e4da;
+}
+.viewEmailCon .emailContent {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #FFFFFF80;
+  overflow-y: scroll;
+}
+.viewEmailCon .emailContent .ql-align-center {
+  text-align: center;
+}
+.viewEmailCon .emailContent .ql-align-justify {
+  text-align: justify;
+}
+.viewEmailCon .emailContent .ql-align-right {
+  text-align: right;
+}
+.viewEmailCon .emailContent .ql-syntax {
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 5px 10px;
+  background-color: #505050;
+  color: white;
+  overflow-x: scroll;
+}
+.viewEmailCon .emailContent blockquote {
+  border-left: 3px solid lightgray;
+  margin: 15px;
+  padding: 5px 15px;
+  font-size: 13px;
+  color: #505050;
+}
+.viewEmailCon .emailContent::-webkit-scrollbar {
+  display: none;
+}
+
+.replyEmailCon {
+  box-sizing: border-box;
+  height: calc(fit-content - 20px);
+  width: 100%;
+  margin: 10px;
+  padding: 10px;
+  border-left: 2px solid lightgray;
+  background-color: red;
+}
+.replyEmailCon .replyEmailInfo {
+  color: darkgray;
+}
+
+/*# sourceMappingURL=styles.css.map */

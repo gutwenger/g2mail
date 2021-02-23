@@ -1,0 +1,77 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+{% block body %}
+
+    <div id="login" class="login-register register">
+        <div id="login-con" class="login-register-con register-con">
+            <div id="login-logo" class="login-register-logo-con">
+                <img src="{% static 'image/logo.png' %}" alt="Logo" class="login-register-logo" />
+            </div>
+            <div id="login-title" class="login-register-title-con">
+                <p class="login-title">
+                    Login
+                </p>
+            </div>
+            <div id="login-form-con" class="login-register-form-con register-form-con">
+                <form action="{% url 'login' %}" method="post" class="form-01">
+                    {% csrf_token %}
+                    <div class="form-01-group">
+                        <i class="far fa-envelope form-01-group-icon"></i>
+                        <div class="form-01-group-input">
+                            <label class="form-01-group-input-label">Email Address</label>
+                            <input id="login-email" class="form-01-group-input-input" type="email" name="email" autocomplete="off">
+                        </div>
+                        <i class="fas fa-check-circle form-01-group-verification"></i>
+                    </div>
+                    <div class="form-01-group">
+                        <i class="fas fa-lock form-01-group-icon"></i>
+                        <div class="form-01-group-input">
+                            <label class="form-01-group-input-label">Password</label>
+                            <input id="login-password" class="form-01-group-input-input" type="password" name="password">
+                        </div>
+                        <i class="fas fa-check-circle form-01-group-verification"></i>
+                    </div>
+                    <input class="btn btn-primary form-01-submit" type="submit" value="Login">
+                    <p class="form-01-message">
+                        Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+                    </p>
+                    {% if "message" %}
+                        <p id="form-01-errormessage" class="form-01-errormessage">{{ message }}</p>
+                    {% endif %}
+                </form>
+            </div>
+            <div id="register-image-con" class="login-register-image-con register-image-con">
+                <img src="{% static 'image/register.jpg' %}" alt="Login" class="register-image" />
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // All Input: If input value, no label display
+        let inputFields = document.querySelectorAll('.form-01-group-input-input');
+        let emailInput = document.querySelector('#login-email');
+        let passwordInput = document.querySelector('#login-password');
+        let submitBtn = document.querySelector(".form-01-submit");
+        let valid_count = 0;
+
+        // Input Field Label
+        inputFields.forEach(input => {
+            let label = input.previousSibling.previousSibling;
+            input.addEventListener('change', () =>{
+                label.style.display = input.value.length > 0
+                    ? "none"
+                    : "flex";
+                input.style.top = input.value.length > 0
+                    ? "0"
+                    : "20px";
+                input.style.height = input.value.length > 0
+                    ? "100%"
+                    : "calc(100% - 25px)";
+            });
+        });
+    })
+</script>
+{% endblock %}

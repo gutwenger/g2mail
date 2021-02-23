@@ -1,0 +1,1 @@
+web: gunicorn --pythonpath g2Mail project3.wsgi

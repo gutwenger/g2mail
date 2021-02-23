@@ -1,0 +1,90 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div id="register" class="login-register register">
+        <div id="register-con" class="login-register-con register-con">
+            <div id="register-logo" class="login-register-logo-con">
+                <img src="{% static 'image/logo.png' %}" alt="Logo" class="login-register-logo" />
+            </div>
+            <div id="register-title" class="login-register-title-con">
+                <p class="register-title">
+                    Welcome to g2mail
+                </p>
+            </div>
+            <div id="register-form-con" class="login-register-form-con register-form-con">
+                <form action="{% url 'register' %}" method="post" class="form-01">
+                    {% csrf_token %}
+                    <div class="form-01-group">
+                        <i class="far fa-envelope form-01-group-icon"></i>
+                        <div class="form-01-group-input">
+                            <label class="form-01-group-input-label">Email Address</label>
+                            <input id="register-email" class="form-01-group-input-input" type="email" name="email" autocomplete="off">
+                        </div>
+                        <i class="fas fa-check-circle form-01-group-verification"></i>
+                    </div>
+                    <div class="form-01-group">
+                        <i class="fas fa-lock form-01-group-icon"></i>
+                        <div class="form-01-group-input">
+                            <label class="form-01-group-input-label">Password</label>
+                            <input id="register-password" class="form-01-group-input-input" type="password" name="password">
+                        </div>
+                        <i class="fas fa-check-circle form-01-group-verification"></i>
+                    </div>
+                    <div class="form-01-group">
+                        <i class="fas fa-lock form-01-group-icon"></i>
+                        <div class="form-01-group-input">
+                            <label class="form-01-group-input-label">Confirm Password</label>
+                            <input id="register-confirm-password" class="form-01-group-input-input" type="password" name="confirmation">
+                        </div>
+                        <i class="fas fa-check-circle form-01-group-verification"></i>
+                    </div>
+                    <input class="btn btn-primary form-01-submit" type="submit" value="Register">
+                    <p class="form-01-message">Already have an account? <a href="{% url 'login' %}">Log In here.</a></p>
+                    {% if "message" %}
+                        <p id="form-01-errormessage" class="form-01-errormessage">{{ message }}</p>
+                    {% endif %}
+                </form>
+            </div>
+            <div id="register-image-con" class="login-register-image-con register-image-con">
+                <img src="{% static 'image/register.jpg' %}" alt="Register" class="register-image" />
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // All Input: If input value, no label display
+        let inputFields = document.querySelectorAll('.form-01-group-input-input');
+        let emailInput = document.querySelector('#register-email');
+        let passwordInput = document.querySelector('#register-password');
+        let confirmPasswordInput = document.querySelector('#confirmPasswordInput');
+        let submitBtn = document.querySelector(".form-01-submit");
+        let valid_count = 0;
+
+        // Input Field Label
+        inputFields.forEach(input => {
+            let label = input.previousSibling.previousSibling;
+            input.addEventListener('change', () =>{
+                label.style.display = input.value.length > 0
+                    ? "none"
+                    : "flex";
+                input.style.top = input.value.length > 0
+                    ? "0"
+                    : "20px";
+                input.style.height = input.value.length > 0
+                    ? "100%"
+                    : "calc(100% - 25px)";
+            });
+        });
+
+        // Submit Btn
+        //submitBtn.disabled = valid_count === 1 ? false : true;
+
+        // Email Input
+    })
+
+</script>
+{% endblock %}
